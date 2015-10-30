@@ -1,50 +1,50 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import random
-import timeit
+
 def generateDenseGraph(nums):
     G=nx.Graph()
-    for i in range(nums-1):
-        G.add_edge(i,i+1,weight=random.randint(1,100))
-    counter=[1 for i in range(nums)]
-    unfull=[i for i in range(nums)]
-    for i in range(nums):
-        while counter[i]<nums*0.19:
-            r=random.choice(unfull)
-            while counter[r]>nums*0.21 or i in G[r] or r==i:
-                if counter[r]>nums*0.21:
-                    unfull.remove(r)
-                r=random.choice(unfull)
-            G.add_edge(i,r,weight=random.randint(1,100))
-            counter[i]+=1
-            counter[r]+=1
+    for v in range(nums-1):
+        G.add_edge(v,v+1,weight=random.randint(1,100))
+    counter=[1 for v in range(nums)]
+    unfull=[v for v in range(nums)]
+    for v in range(nums):
+        while counter[v]<nums*0.19:
+            w=random.choice(unfull)
+            while counter[w]>nums*0.21 or v in G[w] or w==v:
+                if counter[w]>nums*0.21:
+                    unfull.remove(w)
+                w=random.choice(unfull)
+            G.add_edge(v,w,weight=random.randint(1,100))
+            counter[v]+=1
+            counter[w]+=1
     return G
     
 def generateSparseGraph(nums):
     while 1:
         G=nx.Graph()
-        for i in range(nums-1):
-            G.add_edge(i,i+1,weight=random.randint(1,100))
-        for i in range(nums):
+        for v in range(nums-1):
+            G.add_edge(v,v+1,weight=random.randint(1,100))
+        for v in range(nums):
             c=0
-            while len(G[i])<6:
+            while len(G[v])<6:
                 c+=1
                 if c>nums:
                     break
-                r=random.randint(i,nums-1)
-                if r==i or len(G[r])>=6 or i in G[r]:
+                w=random.randint(v,nums-1)
+                if w==v or len(G[w])>=6 or v in G[w]:
                     continue
-                G.add_edge(i,r,weight=random.randint(1,100))
-        for i in range(nums):
-            if len(G[i])==6:
+                G.add_edge(v,w,weight=random.randint(1,100))
+        for v in range(nums):
+            if len(G[v])==6:
                 continue
-            k=i
-            while k<nums-1 and len(G[i])<6:
-                k+=1
-                if len(G[k])>=6 or k in G[i]:
+            w=v
+            while w<nums-1 and len(G[v])<6:
+                w+=1
+                if len(G[w])>=6 or w in G[v]:
                     continue
-                G.add_edge(i,k,weight=random.randint(1,100))
-            if len(G[i])!=6:
+                G.add_edge(v,w,weight=random.randint(1,100))
+            if len(G[v])!=6:
                 break;
         else:
             return G
@@ -60,10 +60,3 @@ G=generateGraph(nums,"dense")
 G=generateGraph(nums,"sparse")
 #nx.draw(G)
 #plt.show()
-
-'''
-t1=timeit.Timer("generateGraph(5000,'dense')","from __main__ import generateGraph")
-print t1.repeat(5,1)
-t2=timeit.Timer("generateGraph(5000,'sparse')","from __main__ import generateGraph")
-print t2.repeat(5,1)
-'''
