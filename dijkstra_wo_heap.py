@@ -1,6 +1,12 @@
 import random_graph_generation as rgg
 
-def maxBandwidthPath(G,s,t):
+def maxBandwidthPath(G,s,t,verbose=0):
+	if len(G)==0 or s==t:
+		if verbose:
+			return None,[],[]
+		else:
+			return None,[]
+
 	UNSEEN,FRINGE,INTREE=range(3)
 	V=len(G)
 	status=[UNSEEN for i in range(V)]
@@ -28,8 +34,23 @@ def maxBandwidthPath(G,s,t):
 			elif status[w]==FRINGE and capacity[w]<min(capacity[v],G[v][w]['weight']):
 				father[w]=v
 				capacity[w]=min(capacity[v],G[v][w]['weight'])
-	path=[s,t]
-	while father[t]!=s:
-		t=father[t]
-		path.insert(1,t)
-	return capacity[t],path
+	if verbose:
+		path=[s,t]
+		bw=[]
+		v=t
+		while father[v]!=s:
+			bw.insert(0,G[v][father[v]]['weight'])
+			v=father[v]
+			path.insert(1,v)
+		bw.insert(0,G[v][father[v]]['weight'])
+		return capacity[t],path,bw
+	else:
+		path=[s,t]
+		v=t
+		while father[v]!=s:
+			v=father[v]
+			path.insert(1,v)
+		return capacity[t],path
+
+		
+	

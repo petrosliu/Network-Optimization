@@ -1,7 +1,13 @@
 import random_graph_generation as rgg
 import heap_structure as hp
 
-def maxBandwidthPath(G,s,t):
+def maxBandwidthPath(G,s,t,verbose=0):
+	if len(G)==0 or s==t:
+		if verbose:
+			return None,[],[]
+		else:
+			return None,[]
+	
 	UNSEEN,FRINGE,INTREE=range(3)
 	V=len(G)
 	F=hp.Heap()
@@ -16,8 +22,7 @@ def maxBandwidthPath(G,s,t):
 		F.insert(capacity[w],w)
 		father[w]=s
 	while status[t]!=INTREE:
-		v=F.maximum()
-		F.delete(1)
+		v=F.pop()
 		status[v]=INTREE
 		for w in G[v]:
 			if status[w]==UNSEEN:
@@ -29,8 +34,20 @@ def maxBandwidthPath(G,s,t):
 				father[w]=v
 				capacity[w]=min(capacity[v],G[v][w]['weight'])
 				F.change(capacity[w],w)
-	path=[s,t]
-	while father[t]!=s:
-		t=father[t]
-		path.insert(1,t)
-	return capacity[t],path
+	if verbose:
+		path=[s,t]
+		bw=[]
+		v=t
+		while father[v]!=s:
+			bw.insert(0,G[v][father[v]]['weight'])
+			v=father[v]
+			path.insert(1,v)
+		bw.insert(0,G[v][father[v]]['weight'])
+		return capacity[t],path,bw
+	else:
+		path=[s,t]
+		v=t
+		while father[v]!=s:
+			v=father[v]
+			path.insert(1,v)
+		return capacity[t],path

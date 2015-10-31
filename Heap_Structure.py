@@ -38,7 +38,10 @@ class Heap:
 			s.append("}\n")
 			s.append(str(self.addr))
 			return "".join(s)
-	
+			
+	def isEmpty(self):
+		return not len(self)
+		
 	def addrUpdate(self,index):
 		if self[index][1] is None:
 			return
@@ -99,7 +102,11 @@ class Heap:
 			return self[1]
 		else:
 			return self[1][1]
-		
+	def pop(self):
+		value=self.maximum()
+		self.delete(1)
+		return value
+			
 	def check(self):
 		if len(self)!=len(self.addr):
 			return False

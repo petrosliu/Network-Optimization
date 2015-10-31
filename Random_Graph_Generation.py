@@ -2,10 +2,10 @@ import networkx as nx
 import random
 
 class Graph(nx.Graph):
-    def generateDenseGraph(self,nums):
+    def generateDenseGraph(self,nums,bwlmt=100):
         self.clear()
         for v in range(nums-1):
-            self.add_edge(v,v+1,weight=random.randint(1,100))
+            self.add_edge(v,v+1,weight=random.randint(1,bwlmt))
         unfull=[v for v in range(nums)]
         for v in range(nums):
             while self.degree(v)<nums*0.19:
@@ -14,13 +14,13 @@ class Graph(nx.Graph):
                     if self.degree(w)>nums*0.21:
                         unfull.remove(w)
                     w=random.choice(unfull)
-                self.add_edge(v,w,weight=random.randint(1,100))
+                self.add_edge(v,w,weight=random.randint(1,bwlmt))
         
-    def generateSparseGraph(self,nums):
+    def generateSparseGraph(self,nums,bwlmt=100):
         while 1:
             self.clear()
             for v in range(nums-1):
-                self.add_edge(v,v+1,weight=random.randint(1,100))
+                self.add_edge(v,v+1,weight=random.randint(1,bwlmt))
             for v in range(nums):
                 c=0
                 while self.degree(v)<6:
@@ -30,7 +30,7 @@ class Graph(nx.Graph):
                     w=random.randint(v,nums-1)
                     if w==v or self.degree(w)>=6 or v in self[w]:
                         continue
-                    self.add_edge(v,w,weight=random.randint(1,100))
+                    self.add_edge(v,w,weight=random.randint(1,bwlmt))
             for v in range(nums):
                 if self.degree(v)==6:
                     continue
@@ -39,18 +39,18 @@ class Graph(nx.Graph):
                     w+=1
                     if self.degree(w)>=6 or w in self[v]:
                         continue
-                    self.add_edge(v,w,weight=random.randint(1,100))
+                    self.add_edge(v,w,weight=random.randint(1,bwlmt))
                 if self.degree(v)!=6:
                     break;
             else:
                 return
     
-    def __init__(self,nums=100,density="dense"):
+    def __init__(self,nums=100,density="dense",bwlmt=100):
         nx.Graph.__init__(self)
         if density=="sparse":
-            self.generateSparseGraph(nums)
+            self.generateSparseGraph(nums,bwlmt)
         else:
-            self.generateDenseGraph(nums)
+            self.generateDenseGraph(nums,bwlmt)
     
     def draw(self):
         import matplotlib.pyplot as plt
