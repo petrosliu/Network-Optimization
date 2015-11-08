@@ -4,8 +4,9 @@ import random
 class Graph(nx.Graph):
     def generateDenseGraph(self,nums,bwlmt=100):
         self.clear()
-        for v in range(nums-1):
-            self.add_edge(v,v+1,weight=random.randint(1,bwlmt))
+        self.add_nodes_from([i for i in range(nums)])
+        #for v in range(nums-1):
+        #    self.add_edge(v,v+1,weight=random.randint(1,bwlmt))
         unfull=[v for v in range(nums)]
         for v in range(nums):
             while self.degree(v)<nums*0.19:
@@ -19,8 +20,9 @@ class Graph(nx.Graph):
     def generateSparseGraph(self,nums,bwlmt=100):
         while 1:
             self.clear()
-            for v in range(nums-1):
-                self.add_edge(v,v+1,weight=random.randint(1,bwlmt))
+            self.add_nodes_from([i for i in range(nums)])
+            #for v in range(nums-1):
+            #    self.add_edge(v,v+1,weight=random.randint(1,bwlmt))
             for v in range(nums):
                 c=0
                 while self.degree(v)<6:
@@ -56,7 +58,16 @@ class Graph(nx.Graph):
         import matplotlib.pyplot as plt
         nx.draw(self)
         plt.show()
-
+        
+    def add_path_through_all_vertices(self,s,t,bwlmt=100):
+        if s==t: return
+        num=len(self)
+        path=[s]+[i for i in range(num) if i !=s and i !=t]+[t]
+        c=0
+        for i in range(num-1):
+            c+=1
+            if not self.has_edge(path[i],path[i+1]):
+                self.add_edge(path[i],path[i+1],weight=random.randint(1,bwlmt))
 #G=Graph(100,"sparse")
 #G=Graph(100,"dense")
 #G.draw()

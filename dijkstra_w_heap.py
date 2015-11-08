@@ -23,6 +23,8 @@ def maxBandwidthPath(G,s,t,verbose=0):
 		father[w]=s
 	while status[t]!=INTREE:
 		v=F.pop()
+		while status[v]==INTREE:
+			v=F.pop()
 		status[v]=INTREE
 		for w in G[v]:
 			if status[w]==UNSEEN:
@@ -33,7 +35,7 @@ def maxBandwidthPath(G,s,t,verbose=0):
 			elif status[w]==FRINGE and capacity[w]<min(capacity[v],G[v][w]['weight']):
 				father[w]=v
 				capacity[w]=min(capacity[v],G[v][w]['weight'])
-				F.change(capacity[w],w)
+				F.insert(capacity[w],w)
 	if verbose:
 		path=[s,t]
 		bw=[]
