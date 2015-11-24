@@ -1,11 +1,13 @@
-import random
-
 class Set:
 	def __init__(self):
 		self.S={}
+		
 	def __len__(self):
 		return len(self.S)
 		
+	def __iter__(self):
+		return self.S.__iter__()
+	
 	def makeSet(self,value):
 		self.S.update({value:{'rank':0,'father':0}})
 		
@@ -13,7 +15,7 @@ class Set:
 		if value not in self.S:
 			return None
 		path=[]
-		while self.S[value]['father']!=0:
+		while self.S[value]['father']:
 			path.append(value)
 			value=self.S[value]['father']
 		for v in path:
@@ -54,13 +56,3 @@ class Set:
 			s.pop()
 			s.append("}")
 			return "".join(s)
-'''		
-S=Set()
-for i in range(50):
-	S.makeSet(i)
-for i in range(100):
-	if random.randint(0,1):
-		S.union(random.randint(0,50),random.randint(0,50))
-	else:
-		S.find(random.randint(0,50))
-'''

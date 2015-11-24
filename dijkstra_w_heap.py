@@ -8,12 +8,12 @@ def maxBandwidthPath(G,s,t,verbose=0):
 		else:
 			return None,[]
 	
-	UNSEEN,FRINGE,INTREE=range(3)
+	UNSEEN,FRINGE,INTREE=xrange(3)
 	V=len(G)
 	F=hp.Heap()
-	status=[UNSEEN for i in range(V)]
-	capacity=[0 for i in range(V)]
-	father=[None for i in range(V)]
+	status=[UNSEEN for i in xrange(V)]
+	capacity=[0 for i in xrange(V)]
+	father=[None for i in xrange(V)]
 	
 	status[s]=INTREE
 	for w in G[s]:

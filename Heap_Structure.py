@@ -1,32 +1,34 @@
-import random
-import math
-
-INF=float("inf")
+NINF=-float("inf")
 class Heap:
 	def __init__(self):
-		self.heap=[(-INF,None)]
-		
+		self.heap={}
+		self.length=0
+
 	def __len__(self):
-		return len(self.heap)-1
+		return self.length
 		
 	def __getitem__(self, n):
-		if -len(self.heap)<n<len(self.heap):
-			return self.heap[n]
-		else:
-			return (-INF,None)
+		return self.heap.get(n,(NINF,None))
 	
 	def __setitem__(self,n,value):
-		if n!=0:
+		if value[0]==NINF:
+			del self.heap[n]
+		else:
 			self.heap[n]=value
-			
+	
 	def __str__(self):
 		if len(self)==0:
 			return "{}"
 		else:
+			import math
 			s=["{\n"]
 			p=int(math.log(len(self),2)+1)
-			for j in range(p):
-				for k in range(pow(2,j)):
+			for j in xrange(p):
+				for k in xrange(pow(2,j)):
+					if pow(2,j)+k>self.length:
+						break;
+					s.append(str(pow(2,j)+k))
+					s.append(':')
 					s.append(str(self[pow(2,j)+k]))
 					s.append(" ")
 				s.append("\n")
@@ -34,53 +36,62 @@ class Heap:
 			return "".join(s)
 			
 	def isEmpty(self):
-		return len(self.heap)<=1
+		return self.length==0
 	
+	def bubbleup(self,index):
+		newitem=self.heap[index]
+		parent=index>>1
+		while parent:
+			tmp=self.heap[parent]
+			if newitem[0]>tmp[0]:
+				self.heap[index]=tmp
+				index,parent=parent,parent>>1
+				continue
+			break
+		self.heap[index]=newitem
+		
+	def bubbledown(self,index):
+		newitem=self.heap[index]
+		child=index<<1
+		end=self.length
+		while child<=end:
+			childr=child+1
+			tmp=self.heap[child]
+			if child<end and self.heap[childr][0]>tmp[0]:
+				child=childr
+				tmp=self.heap[child]
+			if tmp[0]>newitem[0]:
+				self.heap[index]=tmp
+				index,child=child,child<<1
+				continue
+			break
+		self.heap[index]=newitem
+		
 	def heapify(self,index):
-		while self[index][0]>self[index//2][0] and index>1:
-			self[index//2],self[index]=self[index],self[index//2]
-			index//=2
-		while self[index][0]<self[index*2][0] or self[index][0]<self[index*2+1][0]:
-			if self[index*2+1][0]<self[index*2][0]:
-				self[index*2],self[index]=self[index],self[index*2]
-				index*=2
-			else:
-				self[index*2+1],self[index]=self[index],self[index*2+1]
-				index=index*2+1
+		if index>1 and self[index][0]>self[index>>1][0]:
+			self.bubbleup(index)
+		elif self[index][0]<self[index<<1][0] or self[index][0]<self[index<<1+1][0]:
+			self.bubbledown(index)
 				
 	def insert(self,key,value):
-		self.heap.append((key,value))
-		self.heapify(len(self.heap))
+		self.length+=1
+		self.heap[self.length]=(key,value)
+		self.bubbleup(self.length)
 
-	def delete(self,index):
-		self[index]=self.heap[-1]
-		self.heap.pop();
+	def remove(self,index):
+		self.heap[index]=self.heap.pop(self.length)
+		self.length-=1
 		self.heapify(index)
 
-	def maximum(self,verbose=0):
-		if verbose:
-			return self[1]
-		else:
-			return self[1][1]
-			
 	def pop(self):
-		value=self[1][1]
-		self.delete(1)
+		value=self.heap[1][1]
+		self.heap[1]=self.heap.pop(self.length)
+		self.length-=1
+		self.bubbledown(1)
 		return value
-			
+		
 	def check(self):
-		for i in range(1,len(self)):
-			if self[i][0]<self[i*2][0] or self[i][0]<self[i*2+1][0]:
+		for index in xrange(1,self.length+1):
+			if self[index][0]==NINF or self[index][0]<self[index*2][0] or self[index][0]<self[index*2+1][0]:
 				return False
 		return True
-		
-'''
-h=Heap()
-for i in range(20):
-	if random.randint(0,1):
-		h.insert(random.randint(-100,100),(random.randint(1,10),random.randint(1,10)))
-	else:
-		h.delete(random.randint(-len(h),len(h)))
-	print h,h.check()
-print h,h.check()
-'''

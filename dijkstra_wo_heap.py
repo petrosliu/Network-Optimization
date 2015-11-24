@@ -7,11 +7,11 @@ def maxBandwidthPath(G,s,t,verbose=0):
 		else:
 			return None,[]
 
-	UNSEEN,FRINGE,INTREE=range(3)
+	UNSEEN,FRINGE,INTREE=xrange(3)
 	V=len(G)
-	status=[UNSEEN for i in range(V)]
-	capacity=[0 for i in range(V)]
-	father=[None for i in range(V)]
+	status=[UNSEEN for i in xrange(V)]
+	capacity=[0 for i in xrange(V)]
+	father=[None for i in xrange(V)]
 	
 	status[s]=INTREE
 	for w in G[s]:
@@ -20,7 +20,7 @@ def maxBandwidthPath(G,s,t,verbose=0):
 		father[w]=s
 	while status[t]!=INTREE:
 		maxi=0
-		for i in range(V):
+		for i in xrange(V):
 			if status[i]==FRINGE and maxi<capacity[i]:
 				maxi=capacity[i]
 				v=i
